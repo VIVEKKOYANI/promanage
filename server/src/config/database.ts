@@ -1,23 +1,11 @@
+
 import mongoose from "mongoose";
+import { env } from "./env.js";
 
 const connectDatabase = async (): Promise<void> => {
-  const mongoUri = process.env.MONGO_URI;
+  await mongoose.connect(env.MONGO_URI);
 
-  if (!mongoUri) {
-    console.error("MongoDB Connection Failed: MONGO_URI is not set");
-    process.exit(1);
-  }
-
-  try {
-    const connection = await mongoose.connect(mongoUri);
-
-    console.log(
-      `MongoDB Connected: ${connection.connection.host}`
-    );
-  } catch (error) {
-    console.error("MongoDB Connection Failed:", error);
-    process.exit(1);
-  }
+  console.log("MongoDB Connected");
 };
 
 export default connectDatabase;
