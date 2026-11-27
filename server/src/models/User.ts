@@ -1,3 +1,4 @@
+
 import mongoose, { Schema, Document } from "mongoose";
 
 export type UserRole = "admin" | "manager" | "employee";
@@ -27,7 +28,8 @@ const userSchema = new Schema<IUser>(
       required: true,
       unique: true,
       lowercase: true,
-      trim: true
+      trim: true,
+      maxlength: 254
     },
 
     password: {
@@ -39,31 +41,36 @@ const userSchema = new Schema<IUser>(
     role: {
       type: String,
       enum: ["admin", "manager", "employee"],
-      default: "employee"
+      default: "employee",
+      required: true
     },
 
     organizationId: {
       type: Schema.Types.ObjectId,
       ref: "Organization",
-      required: true
+      required: true,
+      index: true
     },
 
     avatar: {
       type: String,
-      default: ""
+      default: "",
+      maxlength: 500
     },
 
     isActive: {
       type: Boolean,
-      default: true
+      default: true,
+      required: true
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    versionKey: false
   }
 );
 
-userSchema.index({ email: 1 }, { unique: true });
+// One email address can belong to only one account.
 userSchema.index({ organizationId: 1, role: 1 });
 
 const User = mongoose.model<IUser>("User", userSchema);
